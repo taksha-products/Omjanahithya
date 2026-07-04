@@ -1,0 +1,77 @@
+# ── Dependencies ─────────────────────────────────────────────
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# ── Next.js build output ──────────────────────────────────────
+/.next/
+/out/
+/build
+
+# ── Environment variables (never commit secrets) ──────────────
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+
+# ── Vercel deployment ─────────────────────────────────────────
+.vercel
+
+# ── Testing & coverage ────────────────────────────────────────
+/coverage
+/.nyc_output
+
+# ── TypeScript ────────────────────────────────────────────────
+*.tsbuildinfo
+next-env.d.ts
+
+# ── Logs ──────────────────────────────────────────────────────
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# ── OS files ──────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── Editor & IDE ──────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Large media files (store in cloud storage instead) ────────
+public/videos/
+
+# ── Certificates & keys ───────────────────────────────────────
+*.pem
+*.key
+*.crt
+*.p12
+
+# ── Package manager locks (keep only one) ─────────────────────
+# Uncomment whichever you're NOT using:
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# ── Generated sitemap & robots (auto-generated on build) ──────
+public/sitemap*.xml
+public/robots.txt
+
+# ── Misc ──────────────────────────────────────────────────────
+.cache
+.parcel-cache
+.turbo
