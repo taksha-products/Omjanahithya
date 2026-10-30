@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import HeroSection from '@/components/home/HeroSection';
-import AboutSnippet from '@/components/home/AboutSnippet';
+import AboutSection from '@/components/home/AboutSection';
 import ProgramsSection from '@/components/home/ProgramsSection';
 import WhyChooseUs from '@/components/home/WhyChooseUs';
 import FacultySection from '@/components/home/FacultySection';
@@ -23,7 +23,7 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <AboutSnippet />
+      <AboutSection />
       <ProgramsSection />
       <WhyChooseUs />
       <FacultySection />

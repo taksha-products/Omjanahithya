@@ -79,8 +79,7 @@ export const PROGRAMS = [
     description:
       'Play-based early learning with phonics, motor skills, and creative activities for young children.',
     icon: 'blocks',
-    image:
-      'https://images.unsplash.com/photo-1548142813-c348350df52b?w=400&q=80',
+    image: IMAGES.kidsOutdoor.replace('w=1200', 'w=600'),
     href: '/academics',
     isFirst: true,
   },
@@ -95,7 +94,7 @@ export const PROGRAMS = [
       'Foundation year with storytelling, rhymes, and activity-based introduction to letters and numbers.',
     icon: 'book-open',
     image:
-      'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400&q=80',
+      'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80',
     href: '/academics',
   },
   {
@@ -108,8 +107,7 @@ export const PROGRAMS = [
     description:
       'School readiness program building literacy, numeracy, and social skills before Class 1.',
     icon: 'graduation-cap',
-    image:
-      'https://images.unsplash.com/photo-1588072432836-e10032774350?w=400&q=80',
+    image: IMAGES.ukgClassroom.replace('w=1200', 'w=600'),
     href: '/academics',
   },
   {
@@ -122,8 +120,7 @@ export const PROGRAMS = [
     description:
       'Strong foundation in English, Maths, Science & Social Studies with Karnataka State Board curriculum.',
     icon: 'book-open',
-    image:
-      'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&q=80',
+    image: IMAGES.students.replace('w=1200', 'w=600'),
     href: '/academics',
   },
   {
@@ -136,8 +133,7 @@ export const PROGRAMS = [
     description:
       'Critical thinking, computer education, and co-curricular development for middle school learners.',
     icon: 'monitor',
-    image:
-      'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=400&q=80',
+    image: IMAGES.computerLab.replace('w=1200', 'w=600'),
     href: '/academics',
   },
   {
@@ -150,8 +146,7 @@ export const PROGRAMS = [
     description:
       'Focused SSLC board preparation with expert faculty, assessments, and career guidance.',
     icon: 'award',
-    image:
-      'https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?w=400&q=80',
+    image: IMAGES.studentsStudying.replace('w=1200', 'w=600'),
     href: '/academics',
   },
 ];
