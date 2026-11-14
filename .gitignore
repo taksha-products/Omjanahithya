@@ -53,7 +53,10 @@ desktop.ini
 *~
 
 # ── Large media files (store in cloud storage instead) ────────
-public/videos/
+# Keep raw/original footage out of git (Cloudflare max file size is 25 MB).
+# Web-compressed videos (campus-drone.mp4, hero-drone.mp4) ARE committed.
+public/videos/*-original.mp4
+public/videos/Drone video.mp4
 
 # ── Certificates & keys ───────────────────────────────────────
 *.pem
