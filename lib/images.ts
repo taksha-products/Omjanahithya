@@ -120,6 +120,9 @@ export const IMAGES = {
   // School kids outdoor
   kidsOutdoor:
     'https://images.unsplash.com/photo-1473091534298-04dcbce3278c?w=1200&q=80',
+  // Children in classroom (UKG / primary readiness)
+  ukgClassroom:
+    'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1200&q=80',
   // Classroom teaching
   teaching:
     'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1200&q=80',
@@ -138,8 +141,8 @@ export const HERO_DRONE_DEV_FALLBACK =
   'https://videos.pexels.com/video-files/3571264/3571264-sd_640_360_30fps.mp4';
 
 export const VIDEOS = {
-  /** Local file; override with NEXT_PUBLIC_HERO_VIDEO_URL for CDN in production */
+  /** Local campus drone footage; override with NEXT_PUBLIC_HERO_VIDEO_URL for CDN in production */
   heroDrone:
-    process.env.NEXT_PUBLIC_HERO_VIDEO_URL?.trim() || '/videos/hero-drone.mp4',
+    process.env.NEXT_PUBLIC_HERO_VIDEO_URL?.trim() || '/videos/campus-drone.mp4',
   heroDroneDevFallback: HERO_DRONE_DEV_FALLBACK,
 } as const;

@@ -54,7 +54,7 @@ function DropItem({ label, href, desc, onClick }: {
     >
       <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
       <div>
-        <p className="text-primary font-semibold text-sm group-hover:text-accent transition-colors">{label}</p>
+        <p className="text-primary font-semibold text-sm group-hover:text-accent-deep transition-colors">{label}</p>
         <p className="text-slate-400 text-xs mt-0.5">{desc}</p>
       </div>
     </Link>
@@ -123,13 +123,13 @@ export function Navbar() {
                     <button
                       className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 ${
                         openMenu === item.label
-                          ? 'text-accent bg-orange-50'
+                          ? 'text-accent-deep bg-orange-50'
                           : 'text-slate-600 hover:text-primary hover:bg-gray-50'
                       }`}
                     >
                       {item.label}
                       <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                        openMenu === item.label ? 'rotate-180 text-accent' : ''
+                        openMenu === item.label ? 'rotate-180 text-accent-deep' : ''
                       }`} />
                     </button>
                   ) : (
@@ -137,7 +137,7 @@ export function Navbar() {
                       href={item.href!}
                       className={`relative px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 block ${
                         isActive(item.href)
-                          ? 'text-accent'
+                          ? 'text-accent-deep'
                           : 'text-slate-600 hover:text-primary hover:bg-gray-50'
                       }`}
                     >
@@ -242,7 +242,7 @@ export function Navbar() {
                                 key={child.label}
                                 href={child.href}
                                 onClick={() => setMobileOpen(false)}
-                                className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-slate-600 hover:text-accent hover:bg-orange-50 transition-colors"
+                                className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-slate-600 hover:text-accent-deep hover:bg-orange-50 transition-colors"
                               >
                                 <span className="w-1 h-1 rounded-full bg-accent shrink-0" />
                                 {child.label}
@@ -258,7 +258,7 @@ export function Navbar() {
                       onClick={() => setMobileOpen(false)}
                       className={`block px-3 py-3 rounded-xl text-sm font-semibold transition-colors ${
                         isActive(item.href)
-                          ? 'text-accent bg-orange-50'
+                          ? 'text-accent-deep bg-orange-50'
                           : 'text-primary hover:bg-gray-50'
                       }`}
                     >

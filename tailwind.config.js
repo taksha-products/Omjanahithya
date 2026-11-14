@@ -26,6 +26,8 @@ module.exports = {
           light: '#FB923C',
           glow: '#F9731620',
           dark: '#EA580C',
+          // Small orange text on light backgrounds (passes WCAG AA)
+          deep: '#C2410C',
         },
         // Gold — achievements, premium badges
         gold: {
@@ -47,6 +49,18 @@ module.exports = {
       fontFamily: {
         heading: ['var(--font-plus-jakarta)', 'Plus Jakarta Sans', 'sans-serif'],
         body: ['var(--font-inter)', 'Inter', 'sans-serif'],
+        // Editorial accent words only — never body copy
+        'accent-serif': ['var(--font-instrument-serif)', 'Georgia', 'serif'],
+      },
+      keyframes: {
+        marquee: {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-50%)' },
+        },
+      },
+      animation: {
+        marquee: 'marquee 32s linear infinite',
+        'spin-slow': 'spin 18s linear infinite',
       },
       backgroundImage: {
         'hero-overlay':

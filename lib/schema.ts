@@ -33,7 +33,7 @@ export function schoolSchema(): Record<string, unknown> {
     description:
       'Best English Medium School in Bantwal offering quality education from Nursery to 10th Standard. Located in Arala, Bantwal, Dakshina Kannada, Karnataka.',
     url: SCHOOL.siteUrl,
-    logo: `${SCHOOL.siteUrl}/logo.png`,
+    logo: `${SCHOOL.siteUrl}/logo.svg`,
     image: IMAGES.schoolBuilding,
     telephone: SCHOOL.phone,
     email: SCHOOL.email,

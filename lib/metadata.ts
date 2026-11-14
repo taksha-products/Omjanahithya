@@ -5,7 +5,7 @@ const BASE_URL = SCHOOL.siteUrl;
 const SITE_BRAND = 'Om Janahithaya School';
 const SITE_TITLE = `${SITE_BRAND} | Best School in Bantwal`;
 const TITLE_TEMPLATE = `%s | ${SITE_BRAND}`;
-const DEFAULT_OG_IMAGE = '/og-image.jpg';
+const DEFAULT_OG_IMAGE = '/images/campus-main-block.jpg';
 
 export interface GenerateMetaOptions {
   title: string;
