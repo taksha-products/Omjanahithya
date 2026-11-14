@@ -9,7 +9,7 @@ import { PageTransition } from '@/components/shared/PageTransition';
 import { defaultMetadata } from '@/lib/metadata';
 import { schoolSchema } from '@/lib/schema';
 import { SCHOOL } from '@/lib/constants';
-import { Plus_Jakarta_Sans, Inter, Dancing_Script } from 'next/font/google';
+import { Plus_Jakarta_Sans, Inter, Dancing_Script, Instrument_Serif } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 
@@ -31,6 +31,14 @@ const dancingScript = Dancing_Script({
   display: 'swap',
 });
 
+const instrumentSerif = Instrument_Serif({
+  subsets: ['latin'],
+  weight: '400',
+  style: ['normal', 'italic'],
+  variable: '--font-instrument-serif',
+  display: 'swap',
+});
+
 export const metadata: Metadata = defaultMetadata;
 
 export default function RootLayout({
@@ -42,7 +50,7 @@ export default function RootLayout({
   const hasAnalytics = gaId && gaId !== 'G-XXXXXXXXXX';
 
   return (
-    <html lang="en-IN" className={`${plusJakarta.variable} ${inter.variable} ${dancingScript.variable}`}>
+    <html lang="en-IN" className={`${plusJakarta.variable} ${inter.variable} ${dancingScript.variable} ${instrumentSerif.variable}`}>
       <head>
         <SchemaOrg schema={schoolSchema()} />
         <link rel="icon" href="/images/Omjanahithya LogoOnly.png" />

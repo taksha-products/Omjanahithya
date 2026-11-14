@@ -2,275 +2,282 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, useInView } from 'framer-motion';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
-import { useRef, useEffect, useState } from 'react';
+import { useRef } from 'react';
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 import { SCHOOL } from '@/lib/constants';
 
-function useCountUp(target: number, start: number, duration = 1.6) {
-  const [count, setCount] = useState(start);
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true });
+const FACTS = [
+  // TODO: needs confirming with the school
+  { label: 'Established', value: SCHOOL.established, ticker: `Est. ${SCHOOL.established}` },
+  { label: 'Curriculum', value: SCHOOL.board, ticker: SCHOOL.board },
+  { label: 'Classes', value: 'Nursery to Class 10', ticker: 'Nursery → Class 10' },
+  { label: 'Medium of instruction', value: 'English', ticker: 'English medium' },
+  // TODO: needs confirming with the school
+  { label: 'SSLC results', value: `${SCHOOL.passPct} pass rate`, ticker: `${SCHOOL.passPct} SSLC pass rate` },
+];
 
-  useEffect(() => {
-    if (!inView) return;
+type Word = { text: string; style?: 'serif' | 'underline' };
 
-    const startTime = performance.now();
-    const range = target - start;
-
-    const tick = (now: number) => {
-      const elapsed = (now - startTime) / 1000;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.round(start + range * eased));
-      if (progress < 1) requestAnimationFrame(tick);
-    };
-
-    requestAnimationFrame(tick);
-  }, [inView, target, start, duration]);
-
-  return { ref, count };
-}
-
-function StatItem({
-  value,
-  suffix,
-  label,
-  from,
-}: {
-  value: number;
-  suffix: string;
-  label: string;
-  from: number;
-}) {
-  const { ref, count } = useCountUp(value, from);
-
-  return (
-    <div ref={ref} className="text-center">
-      <p className="text-3xl font-black leading-none text-primary">
-        {count}
-        {suffix}
-      </p>
-      <p className="mt-1.5 text-xs font-medium leading-tight text-slate-400">{label}</p>
-    </div>
-  );
-}
-
-const HIGHLIGHTS = [
-  'Karnataka State Board SSLC curriculum',
-  'Nursery to Class 10 — one trusted school',
-  'English medium education in Bantwal since 1998',
-  '98% SSLC pass rate, year after year',
+const HEADLINE: Word[] = [
+  { text: 'A' },
+  { text: 'legacy' },
+  { text: 'of' },
+  { text: 'excellence', style: 'serif' },
+  { text: 'in' },
+  { text: 'Bantwal.', style: 'underline' },
 ];
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 24 },
   visible: (d = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: d },
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: d },
   }),
 };
 
+function PaintedWord({
+  word,
+  progress,
+  range,
+  reduceMotion,
+}: {
+  word: Word;
+  progress: MotionValue<number>;
+  range: [number, number];
+  reduceMotion: boolean;
+}) {
+  const opacity = useTransform(progress, range, [0.15, 1]);
+  const underline = useTransform(progress, [range[0], 1], [0, 1]);
+
+  return (
+    <motion.span
+      style={{ opacity: reduceMotion ? 1 : opacity }}
+      className={`relative inline-block ${
+        word.style === 'serif'
+          ? 'pr-1 font-accent-serif text-[1.12em] font-normal italic tracking-normal text-accent-deep'
+          : ''
+      }`}
+    >
+      {word.text}
+      {word.style === 'underline' && (
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 200 12"
+          preserveAspectRatio="none"
+          className="absolute -bottom-1.5 left-0 h-3 w-[92%] text-accent lg:-bottom-2"
+        >
+          <motion.path
+            d="M3 9 C 45 3, 110 2, 197 6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="4"
+            strokeLinecap="round"
+            style={{ pathLength: reduceMotion ? 1 : underline }}
+          />
+        </svg>
+      )}
+    </motion.span>
+  );
+}
+
+function Star({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
+      <path
+        d="M12 0c.6 6.4 5.6 11.4 12 12-6.4.6-11.4 5.6-12 12-.6-6.4-5.6-11.4-12-12C6.4 11.4 11.4 6.4 12 0Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 export default function AboutSection() {
+  const reduceMotion = useReducedMotion() ?? false;
+
+  const headlineRef = useRef<HTMLHeadingElement>(null);
+  const { scrollYProgress: headlineProgress } = useScroll({
+    target: headlineRef,
+    offset: ['start 0.9', 'start 0.35'],
+  });
+
+  const photoRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: revealProgress } = useScroll({
+    target: photoRef,
+    offset: ['start end', 'center center'],
+  });
+  const { scrollYProgress: passProgress } = useScroll({
+    target: photoRef,
+    offset: ['start end', 'end start'],
+  });
+  // Card opens out to full bleed as it reaches the middle of the screen
+  const clipPath = useTransform(
+    revealProgress,
+    [0, 1],
+    ['inset(0% 8% 0% 8% round 28px)', 'inset(0% 0% 0% 0% round 0px)']
+  );
+  // Rests slightly zoomed so the building fills the wide frame; settles slowly on scroll
+  const imageScale = useTransform(passProgress, [0, 1], [1.25, 1.15]);
+
   return (
     <section
       id="about"
-      className="relative overflow-hidden bg-white pb-20 pt-8 lg:pb-28 lg:pt-10"
+      className="relative overflow-hidden bg-white pb-16 pt-10 lg:pb-20 lg:pt-14"
       aria-label="About Om Janahithaya English Medium School Bantwal"
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-12 right-6 opacity-25"
-        style={{
-          backgroundImage: 'radial-gradient(#0F1B3525 1.5px, transparent 1.5px)',
-          backgroundSize: '18px 18px',
-          width: 130,
-          height: 130,
-        }}
-      />
-
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-7 lg:pr-4">
-            <motion.span
-              variants={fadeUp}
-              custom={0}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="
-                mb-5 inline-block rounded-full border border-accent/30
-                px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-accent
-              "
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
+          <div className="lg:col-span-6">
+            <p className="mb-5 text-[13px] font-semibold uppercase tracking-[0.14em] text-accent-deep">
+              About the school
+            </p>
+            <h2
+              ref={headlineRef}
+              className="font-heading text-[2.5rem] font-bold leading-[1.12] tracking-[-0.03em] text-primary sm:text-6xl lg:text-[4.25rem]"
             >
-              About Us
-            </motion.span>
+              {HEADLINE.map((word, i) => {
+                const step = 1 / HEADLINE.length;
+                return (
+                  <span key={word.text}>
+                    <PaintedWord
+                      word={word}
+                      progress={headlineProgress}
+                      range={[i * step * 0.8, i * step * 0.8 + step]}
+                      reduceMotion={reduceMotion}
+                    />
+                    {i < HEADLINE.length - 1 && ' '}
+                  </span>
+                );
+              })}
+            </h2>
+          </div>
 
-            <motion.h2
-              variants={fadeUp}
-              custom={0.07}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="mb-2 font-heading text-4xl font-black leading-tight tracking-tight text-primary lg:text-5xl"
+          <motion.div
+            variants={fadeUp}
+            custom={0.1}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-80px' }}
+            className="lg:col-span-5 lg:col-start-8 lg:pt-12"
+          >
+            <p className="text-lg leading-relaxed text-slate-800 lg:text-xl lg:leading-relaxed">
+              Since {SCHOOL.established}, {SCHOOL.aboutParagraph1}
+            </p>
+            <p className="mt-5 text-base leading-relaxed text-slate-600">
+              {SCHOOL.aboutParagraph2}
+            </p>
+
+            <Link
+              href="/about"
+              className="group mt-8 inline-flex items-center gap-3 rounded-full bg-primary py-1.5 pl-6 pr-1.5 text-sm font-semibold text-white transition-colors hover:bg-primary-light"
             >
-              A Legacy of Excellence{' '}
-              <span className="block">
-                in <span className="text-accent">Bantwal</span>
-              </span>
-            </motion.h2>
-
-            <motion.div
-              variants={fadeUp}
-              custom={0.1}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="mb-6 h-1 w-14 rounded-full bg-accent"
-            />
-
-            <motion.div
-              variants={fadeUp}
-              custom={0.14}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="mb-8 space-y-4 text-base leading-relaxed text-slate-600"
-            >
-              <p>
-                For over {SCHOOL.yearsExp}, {SCHOOL.aboutParagraph1}
-              </p>
-              <p>{SCHOOL.aboutParagraph2}</p>
-            </motion.div>
-
-            <motion.ul
-              variants={fadeUp}
-              custom={0.19}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="mb-10 space-y-3"
-            >
-              {HIGHLIGHTS.map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <CheckCircle2
-                    className="mt-0.5 h-5 w-5 shrink-0 text-accent"
-                    strokeWidth={2}
-                    aria-hidden="true"
-                  />
-                  <span className="text-sm font-medium text-slate-700">{item}</span>
-                </li>
-              ))}
-            </motion.ul>
-
-            <motion.div
-              variants={fadeUp}
-              custom={0.24}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="mb-10 grid grid-cols-2 gap-4 border-b border-t border-gray-100 py-6 sm:grid-cols-4"
-            >
-              <StatItem value={25} suffix="+" label="Years of Trust" from={18} />
-              <StatItem value={500} suffix="+" label="Students" from={460} />
-              <StatItem value={30} suffix="+" label="Educators" from={22} />
-              <StatItem value={98} suffix="%" label="SSLC Result" from={88} />
-            </motion.div>
-
-            <motion.div
-              variants={fadeUp}
-              custom={0.29}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-            >
-              <Link
-                href="/about"
-                className="
-                  inline-flex items-center gap-2 rounded-xl bg-primary px-7 py-3.5
-                  text-sm font-bold text-white transition-all duration-200
-                  hover:-translate-y-0.5 hover:bg-[#0F1424] hover:shadow-lg
-                "
-              >
-                Explore Our Story
+              Explore our story
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent transition-transform duration-300 group-hover:-rotate-45">
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-            </motion.div>
-          </div>
-
-          <div className="relative lg:col-span-5">
-            <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="relative h-[420px] overflow-hidden rounded-3xl shadow-2xl lg:h-[480px]"
-            >
-              <Image
-                src="/images/schoolimage.JPG"
-                alt="Om Janahithaya English Medium School campus, Arala, Bantwal"
-                fill
-                className="object-cover object-center"
-                sizes="(max-width: 1024px) 100vw, 42vw"
-                priority
-              />
-              <div
-                className="absolute inset-0 bg-gradient-to-t from-[#080E1A]/40 via-transparent to-transparent"
-                aria-hidden="true"
-              />
-
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.45 }}
-                className="absolute bottom-6 right-6 rounded-2xl bg-white/95 px-5 py-3.5 shadow-xl backdrop-blur-sm"
-              >
-                <p className="text-sm font-black leading-tight text-primary">Nurturing Minds.</p>
-                <p className="text-sm font-black leading-tight text-accent">Building Futures.</p>
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.88, x: -20 }}
-              whileInView={{ opacity: 1, scale: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="
-                absolute -bottom-8 -left-4 h-[160px] w-[160px] overflow-hidden rounded-2xl
-                border-4 border-white shadow-2xl lg:-left-8 lg:h-[200px] lg:w-[200px]
-              "
-            >
-              <Image
-                src="/images/teacher-students.png"
-                alt="Students learning at Om Janahithaya School Bantwal"
-                fill
-                className="object-cover object-top"
-                sizes="200px"
-              />
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className="
-                absolute -right-3 -top-5 rounded-2xl bg-accent px-5 py-4 text-center
-                text-white shadow-xl lg:-right-6
-              "
-            >
-              <p className="text-3xl font-black leading-none">25+</p>
-              <p className="mt-0.5 text-[10px] font-bold uppercase tracking-widest text-white/80">
-                Years of
-                <br />
-                Excellence
-              </p>
-            </motion.div>
-          </div>
+              </span>
+            </Link>
+          </motion.div>
         </div>
       </div>
+
+      <div ref={photoRef} className="relative mt-14 lg:mt-20">
+        <motion.div
+          style={{ clipPath: reduceMotion ? 'none' : clipPath }}
+          className="relative aspect-[3/2] w-full overflow-hidden bg-slate-100 sm:aspect-[2/1] lg:aspect-auto lg:h-[min(42.857vw,680px)]"
+        >
+          <motion.div
+            className="absolute inset-0 origin-[50%_40%]"
+            style={{ scale: reduceMotion ? 1.15 : imageScale }}
+          >
+            <Image
+              src="/images/campus-main-block.jpg"
+              alt="Main block and courtyard of Om Janahithaya English Medium School, Arala, Bantwal"
+              fill
+              className="object-cover object-[50%_40%]"
+              sizes="100vw"
+            />
+          </motion.div>
+        </motion.div>
+
+        {/* Rotating stamp — decorative; the same facts are in the list below */}
+        <div
+          aria-hidden="true"
+          className="absolute -top-12 right-[6%] z-10 h-24 w-24 sm:-top-14 sm:h-28 sm:w-28 lg:-top-16 lg:h-32 lg:w-32"
+        >
+          <svg viewBox="0 0 100 100" className="h-full w-full animate-spin-slow motion-reduce:animate-none">
+            <circle cx="50" cy="50" r="50" className="fill-primary" />
+            <defs>
+              <path id="about-stamp-circle" d="M50,50 m-36,0 a36,36 0 1,1 72,0 a36,36 0 1,1 -72,0" />
+            </defs>
+            <text className="fill-white text-[9.5px] font-bold uppercase tracking-[0.2em]">
+              <textPath href="#about-stamp-circle">
+                {/* TODO: year needs confirming with the school */}
+                Est. {SCHOOL.established} · Arala · Bantwal ·
+              </textPath>
+            </text>
+          </svg>
+          <Star className="absolute inset-0 m-auto h-7 w-7 text-accent lg:h-9 lg:w-9" />
+        </div>
+
+        <p className="mx-auto mt-3 max-w-7xl px-5 text-sm text-slate-500 lg:px-8">
+          The main block and courtyard during the monsoon, Arala, Bantwal.
+        </p>
+      </div>
+
+      <dl className="sr-only">
+        {FACTS.map((fact) => (
+          <div key={fact.label}>
+            <dt>{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      {/* Moving ticker; reduced-motion visitors get the static row below instead */}
+      <div
+        aria-hidden="true"
+        className="group mt-12 overflow-hidden border-y border-slate-200 py-5 [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)] motion-reduce:hidden lg:mt-16 lg:py-7"
+      >
+        <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused]">
+          {[0, 1].map((copy) => (
+            <ul key={copy} className="flex shrink-0 items-center">
+              {FACTS.map((fact, i) => (
+                <li key={fact.label} className="flex items-center">
+                  <span
+                    className={`whitespace-nowrap px-6 lg:px-10 ${
+                      i % 2
+                        ? 'font-accent-serif text-[2.1rem] italic text-accent-deep lg:text-[4.25rem]'
+                        : 'font-heading text-3xl font-bold tracking-[-0.02em] text-primary lg:text-6xl'
+                    }`}
+                  >
+                    {fact.ticker}
+                  </span>
+                  <Star className="h-5 w-5 shrink-0 text-accent lg:h-8 lg:w-8" />
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      </div>
+
+      <ul
+        aria-hidden="true"
+        className="mx-auto mt-12 hidden max-w-7xl flex-wrap items-center gap-x-5 gap-y-2 border-y border-slate-200 px-5 py-5 font-heading text-xl font-bold text-primary motion-reduce:flex lg:px-8"
+      >
+        {FACTS.map((fact) => (
+          <li key={fact.label} className="flex items-center gap-5">
+            {fact.ticker}
+            <Star className="h-3.5 w-3.5 text-accent" />
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
